@@ -1,0 +1,4 @@
+qiskit[visualization]
+qiskit-nature
+qiskit-machine-learning
+qiskit-optimization
