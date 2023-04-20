@@ -106,6 +106,7 @@ qiskit-dynamics==0.4.0
 qiskit-experiments==0.5.1
 qiskit-finance==0.3.4
 qiskit-ibm-experiment==0.3
+qiskit-ibm-provider==0.5.2
 qiskit-ibm-runtime==0.9.3
 qiskit-ibmq-provider==0.20.2
 qiskit-machine-learning==0.6.0
