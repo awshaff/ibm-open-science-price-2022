@@ -45,7 +45,7 @@ class RVB:
             raise CircuitError("The number of qubits should be even!")
         
 
-        ansatz = QuantumCircuit(n)
+        ansatz = QuantumCircuit(n, name="RVB")
 
         # build initial state
         for i in range(0,n):
@@ -100,7 +100,7 @@ class HVAnsatz:
             raise CircuitError("The number of qubits should be even!")
         
         # Build a custom ansatz from scratch
-        ansatz = QuantumCircuit(n)
+        ansatz = QuantumCircuit(n, name="HVA")
 
         # build initial state
         for i in range(0,n):

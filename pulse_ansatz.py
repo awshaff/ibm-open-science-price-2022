@@ -244,7 +244,7 @@ class PulseAnsatz(ABC):
 
     def circuit(self) -> QuantumCircuit:
         """Make the quantum circuit."""
-        ansatz = QuantumCircuit(self._num_qubits)
+        ansatz = QuantumCircuit(self._num_qubits, name="PulseAnsatz")
 
         for _ in range(self._reps):
             ansatz.compose(self._layer(), inplace=True)
