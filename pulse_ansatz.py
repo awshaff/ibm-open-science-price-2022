@@ -76,9 +76,9 @@ class AnsatzBuilder:
 
         return self._control_channels[qubits]
 
-    def new_param(self) -> Parameter:
+    def new_param(self, paramstr = 'p') -> Parameter:
         """Create a new parameter and save it."""
-        param = Parameter(f"p{len(self._params ) +1}")
+        param = Parameter("".join([paramstr, str(len(self._params))]))
         self._params.append(param)
         return param
 
@@ -88,7 +88,7 @@ class AnsatzBuilder:
 
     def add_rx(self, circuit: QuantumCircuit, qubit: int):
         """Create an x gate with a parametric amplitude and attach a pulse to it."""
-        param = self.new_param()
+        param = self.new_param('phi')
 
         circuit.rx(param, qubit)
 
@@ -109,9 +109,9 @@ class AnsatzBuilder:
                 then a new parameter will be created.
         """
         if duration is None:
-            duration = self.new_param()
+            duration = self.new_param('t')
 
-        circuit.append(Gate("cr", 2, params=[duration, self.new_param()]), qubits)
+        circuit.append(Gate("cr", 2, params=[duration, self.new_param('phi')]), qubits)
 
     def add_schedules(self, circuit: QuantumCircuit):
         """Parse the quantum circuit and add the schedules to it."""
@@ -271,7 +271,7 @@ class CRAnsatz(PulseAnsatz):
             self._builder.add_rx(ansatz, qubit)
 
             if self._add_rz:
-                ansatz.rz(self._builder.new_param(), qubit)
+                ansatz.rz(self._builder.new_param('phi'), qubit)
 
         if self._entanglement == "interleaved":
             for qubit in range(0, self._num_qubits, 2):
