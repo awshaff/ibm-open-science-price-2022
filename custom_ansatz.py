@@ -99,6 +99,8 @@ class HVAnsatz:
         if n % 2 != 0:
             raise CircuitError("The number of qubits should be even!")
         
+        # phi = self.new_param('phi')
+        # gamma = self.new_param('gamma')
         # Build a custom ansatz from scratch
         ansatz = QuantumCircuit(n, name="HVA")
 
@@ -108,7 +110,7 @@ class HVAnsatz:
 
         # build bell state
         for j in range(0,n):
-            if i % 2 == 0:
+            if j % 2 == 0:
                 ansatz.h(j)
                 ansatz.cx(j,j+1)
 
