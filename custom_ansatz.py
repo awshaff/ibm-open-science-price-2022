@@ -3,7 +3,7 @@ from typing import Optional
 from qiskit.circuit import QuantumCircuit, Parameter
 from qiskit.circuit.exceptions import CircuitError
 
-class RVB:
+class RVBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:
     """A class to help build Resonating Valence Bond ansatz circuit
     """
 
