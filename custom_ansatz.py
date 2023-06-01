@@ -24,14 +24,14 @@ class RVB:
         return param
     
     def add_eSWAP(self):
+        phi = self.new_param()
         circ = QuantumCircuit(2, name="eSWAP")
         circ.cnot(1, 0)
-        #circ.crx(phi, control_qubit=0, target_qubit=1)
-        circ.crx(self.new_param(), control_qubit=0, target_qubit=1)
+        circ.crx(phi, control_qubit=0, target_qubit=1)
+        # circ.crx(self.new_param(), control_qubit=0, target_qubit=1)
         circ.x(0)
-        #circ.rz(-phi/2, 0)
-        #circ.x(0)
-        circ.rz(- self.new_param()/2, 0)
+        # circ.rz(- self.new_param()/2, 0)
+        circ.rz(-phi/2, 0)
     
         circ.cnot(1,0)
         return circ.to_gate()
@@ -95,6 +95,8 @@ class HVAnsatz:
         """Make the quantum circuit."""
 
         n = self._num_qubits
+        phi = self.new_param('phi')
+        gamma = self.new_param('gamma')
 
         if n % 2 != 0:
             raise CircuitError("The number of qubits should be even!")
@@ -119,18 +121,27 @@ class HVAnsatz:
             # odd Hamiltonian
             for i in range(n-1,0,-2):
                 if i < n-1:
-                    ansatz.rzz(self.new_param('phi'),i,i+1)
-                    ansatz.ryy(self.new_param('phi'),i,i+1)
-                    ansatz.rxx(self.new_param('phi'),i,i+1)
+                    # ansatz.rzz(self.new_param('phi'),i,i+1)
+                    # ansatz.ryy(self.new_param('phi'),i,i+1)
+                    # ansatz.rxx(self.new_param('phi'),i,i+1)
+                    ansatz.rzz(phi,i,i+1)
+                    ansatz.ryy(phi,i,i+1)
+                    ansatz.rxx(phi,i,i+1)
                 else:
-                    ansatz.rzz(self.new_param('phi'),i,0)
-                    ansatz.ryy(self.new_param('phi'),i,0)
-                    ansatz.rxx(self.new_param('phi'),i,0)
+                    # ansatz.rzz(self.new_param('phi'),i,0)
+                    # ansatz.ryy(self.new_param('phi'),i,0)
+                    # ansatz.rxx(self.new_param('phi'),i,0)
+                    ansatz.rzz(phi,i,0)
+                    ansatz.ryy(phi,i,0)
+                    ansatz.rxx(phi,i,0)
 
             # even Hamiltonian
             for i in range(0,n,2):
-                ansatz.rzz(self.new_param('gamma'),i,i+1)
-                ansatz.ryy(self.new_param('gamma'),i,i+1)
-                ansatz.rxx(self.new_param('gamma'),i,i+1)
+                # ansatz.rzz(self.new_param('gamma'),i,i+1)
+                # ansatz.ryy(self.new_param('gamma'),i,i+1)
+                # ansatz.rxx(self.new_param('gamma'),i,i+1)
+                ansatz.rzz(gamma,i,i+1)
+                ansatz.ryy(gamma,i,i+1)
+                ansatz.rxx(gamma,i,i+1)
 
         return ansatz
