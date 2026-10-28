@@ -1,32 +1,61 @@
-# IBM Quantum Awards: Open Science Prize 2022
+# Kagome Heisenberg Antiferromagnet with VQE
 
-IBM Quantum is excited to announce the fifth annual quantum awards (and the third annual Open Science Prize)—an award for the best open source solution to some of the most pressing problems in the field of quantum computing. 
+Variational quantum eigensolver (VQE) study of the spin-1/2 Heisenberg antiferromagnet on the kagome lattice, comparing two variational ansatzes.
 
-This year, the challenge will feature one problem from the field of quantum ground state preparation. The best open source solution will receive a \$30,000 prize. The runner up will receive \$20,000. 
+This project began as my entry to the **IBM Quantum Open Science Prize 2022**. It was **not a winning entry**; I later developed it into a conference paper:
 
-Preparing quantum states lies at the heart of quantum computing, and is essential to promising applications of near-term quantum processors. This year's problem asks participants to prepare the ground state of a Heisenberg spin-1/2 Hamiltonian on a kagome lattice using IBM Quantum's 16-qubit ibmq_guadalupe system. The ground states of such systems are highly entangled and linked to exotic quantum behavior at the forefront of quantum research. The goal is to compute the ground state energy with the highest fidelity using VQE. Note that this is the largest qubit system offered in an Open Science Prize to date. We look forward to another year of incredible solutions.
+> A. W. Shaffar, A. A. Hakim, H. Jung, and H. Shin, "Comparative Analysis of Variational Ansatzes in the Kagome Heisenberg Antiferromagnet," *2023 Korean Institute of Communications and Information Sciences (KICS) Fall Conference*, pp. 106–107, 2023.
 
-**Read more on the [blog](https://research.ibm.com/blog/ibm-quantum-open-science-prize-2022) post and register [here](https://ibmquantumawards.bemyapp.com/#/event)**.
+## The problem
 
-The competition will conclude on April 15, 2023. 
+Find the ground state of the Heisenberg Hamiltonian on the kagome lattice,
 
-*Once you register, we encourage you to join us on the Qiskit Slack Channel [#open-science-prize-22](https://qiskit.slack.com/archives/C04BF2X563C) to chat and ask questions. Join the Qiskit Slack workspace [here](https://ibm.co/joinqiskitslack), if you haven't already.*
+```
+H = Σ_<ij> ( X_i X_j + Y_i Y_j + Z_i Z_j )
+```
 
-Participants may submit their answer as outlined below:
+summed over neighbouring spins. The IBM challenge asked for a relative error below 1% against the exact ground-state energy. Exact solutions become infeasible as the system grows, which is why a variational quantum approach is interesting.
 
-- Each team or participant may only contribute to one submission
-- Solution may only be executed on the designated device (ibmq_guadalupe)
-- Each submission must use the VQE algorithm to optimize and measure the ground state energy under the specified Hamiltonian and lattice as outlined in the included Jupyter Notebook.
-- Only use libraries that can be installed using either pip install or conda install, and no purchased libraries.
-- Document code with concise, clear language about the chosen methodology.
-- The relative error of the measured ground state energy must be below 1% for consideration.
+## What I compared
 
-The submissions will be judged on the following criteria:
+| Ansatz | Idea | Parameters |
+|---|---|---|
+| **Resonating Valence Bond (RVB)** | Built from eSWAP gates; captures entanglement between qubit pairs | n × l (12 for one layer on 12 qubits) |
+| **Hamiltonian Variational Ansatz (HVA)** | Built from XX, YY, and ZZ rotations derived from the Hamiltonian itself | 2 per layer |
 
-- Performance as measured by the relative error of the measured ground state energy w.r.t. the exact value in comparison to other submissions (Max 25 points).
-- Scalability of the solution to larger qubit devices and larger kagome lattices (Max 5 points)
-- Creativity in developing a unique, innovative, and original solution (Max 5 points)
-- Clarity of provided documentation and solution code (Max 5 points)
+Both were optimized with Adam using identical settings (learning rate 0.01). The repository also contains SPSA runs for both ansatzes, which are not reported in the paper.
 
-# Open Science
-The goal of the Prize is to make significant progress on challenges at the forefront of quantum computation by doing science in the open. The resulting solutions will be open-sourced for the benefit of the entire quantum computing community.
+## Findings (from the paper)
+
+- The HVA starts further from the target energy but converges toward the optimum, even though it has far fewer parameters than the RVB ansatz (2 versus 12).
+- The HVA uses a deeper circuit, which could hurt performance on noisy intermediate-scale quantum (NISQ) hardware.
+- The paper reports results within 1% of the classically computed ground-state energy, and concludes that the HVA is a good choice for this model.
+
+## Repository contents
+
+| File | What it is |
+|---|---|
+| `kagome-vqe.ipynb` | Main notebook: runs the VQE experiments and produces the results |
+| `heisenberg_model.py` | Kagome Heisenberg Hamiltonian |
+| `custom_ansatz.py` | Gate-level RVB and HVA ansatzes |
+| `pulse_ansatz.py` | Pulse-level ansatz (exploratory; not part of the paper) |
+| `HVA_adam.csv`, `RVB_adam.csv`, `HVA_spsa.csv`, `RVB_spsa.csv` | Optimization histories |
+| `kagome_unit_cell.png` | The lattice unit cell used |
+| `requirements.txt` | Python dependencies |
+
+## Running it
+
+```bash
+pip install -r requirements.txt
+jupyter notebook kagome-vqe.ipynb
+```
+
+## Limitations
+
+- The results come from **noiseless simulation**. Effects of noise on NISQ devices are not studied, as the paper notes.
+- The project did not win the IBM prize.
+- Only a small system (12 qubits) is studied.
+
+## Reference
+
+Challenge description: IBM Quantum Open Science Prize 2022 (the original brief).
